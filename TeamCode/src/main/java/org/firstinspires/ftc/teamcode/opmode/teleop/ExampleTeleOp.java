@@ -1,0 +1,72 @@
+package org.firstinspires.ftc.teamcode.opmode.teleop;
+
+import static org.firstinspires.ftc.teamcode.globals.Constants.OpModeType;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.seattlesolvers.solverslib.command.CommandOpMode;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.util.TelemetryEx;
+
+import org.firstinspires.ftc.teamcode.globals.Constants;
+import org.firstinspires.ftc.teamcode.globals.Robot;
+
+//@Config
+@Disabled
+//@TeleOp(group = "TeleOp")
+public class ExampleTeleOp extends CommandOpMode {
+    public GamepadEx driver;
+    public GamepadEx operator;
+
+    public ElapsedTime timer;
+
+    TelemetryEx telemetryEx = new TelemetryEx(new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()));
+
+    private final Robot robot = Robot.getInstance();
+
+    @Override
+    public void initialize() {
+        // Must have for all opModes
+        Constants.OP_MODE_TYPE = OpModeType.TELEOP;
+
+        // Resets the command scheduler
+        super.reset();
+
+        // Initialize the robot (which also registers subsystems, configures CommandScheduler, etc.)
+        robot.init(hardwareMap);
+
+        driver = new GamepadEx(gamepad1);
+        operator = new GamepadEx(gamepad2);
+
+        // Driver controls
+        // TODO: add controls here
+
+        // Operator controls
+        // TODO: add controls here
+    }
+
+    @Override
+    public void preRun() {
+        robot.initHasMovement();
+        timer = new ElapsedTime();
+    }
+
+    @Override
+    public void run() {
+        // TODO: Add robot drive movement here
+
+        telemetryEx.addData("Loop Time", timer.milliseconds());
+        timer.reset();
+
+        // DO NOT REMOVE ANY LINES BELOW! Runs the command scheduler and updates telemetry
+        super.run();
+        telemetryEx.update();
+    }
+
+    @Override
+    public void end() {
+//        Constants.END_POSE = robot.drive.getPose();
+    }
+}

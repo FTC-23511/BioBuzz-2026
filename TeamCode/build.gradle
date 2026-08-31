@@ -26,4 +26,22 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+
+    implementation "com.acmerobotics.dashboard:dashboard:0.5.1" // FTC Dashboard
+
+
+    // Marrow (for Zones)
+    implementation 'com.skeletonarmyftc.marrow:core:1.1.2'
+
+
+    //noinspection NewerVersionAvailable
+    implementation("org.ejml:ejml-simple:0.39") {
+        exclude group: "org.ejml", module: "ejml-all"
+    }
+
+    // JUnit 5
+    //noinspection NewerVersionAvailable
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.11.3"
+    //noinspection NewerVersionAvailable
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.11.3"
 }
