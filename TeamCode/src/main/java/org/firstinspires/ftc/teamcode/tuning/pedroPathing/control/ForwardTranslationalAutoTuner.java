@@ -17,8 +17,8 @@ import java.util.List;
 
 @TeleOp(group = "3")
 public class ForwardTranslationalAutoTuner extends OpMode {
-    public static double BETA_LARGE = 0.042577;
-    public static double BETA_SMALL = 0.12773;
+    public static double BETA_LARGE = 0.124;
+    public static double BETA_SMALL = 0.0715;
     public static double VEL_AGGRESSIVENESS = 0.85;
 
     private static final double POWER = 0.4;
@@ -110,15 +110,10 @@ public class ForwardTranslationalAutoTuner extends OpMode {
         telemetry.addData("Drive Feedforward", "kV=" + String.format("%.4f", kV * VEL_AGGRESSIVENESS));
     }
 
-    private double calculatekP(double beta) {
+    private double calculatekP(double alpha) {
         kV = 1 / K;
-        kA = tau / K * beta;
-        double denominator = foresightConfig.linearBrakeCoefficients.get().get(0,0) + 2.0 * foresightConfig.quadraticBrakeCoefficients.get().get(0,0) * vMax;
-        double discriminant = kA - kV * denominator;
-
-        if (discriminant < 0) return kV * kV / (4.0 * kA);
-        double sqrt = (Math.sqrt(kA) - Math.sqrt(discriminant)) / denominator;
-        return sqrt * sqrt;
+        kA = tau / K;
+        return K * tau * alpha * alpha;
     }
 
     private void systemIdentification() {

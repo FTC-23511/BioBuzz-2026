@@ -40,7 +40,7 @@ public class PinpointTuner extends Procedure {
         boolean forwardPodReversed = runOpMode(new ForwardDirection(pinpointName.get(), podType.get(), customPodScalar));
         boolean strafePodReversed = runOpMode(new StrafeDirection(pinpointName.get(), podType.get(), customPodScalar));
 
-        ArrayList<Double> offsets = runOpMode(new Offsets(pinpointName.get(), podType.get(), customPodScalar, forwardPodReversed, strafePodReversed));
+        List<Double> offsets = runOpMode(new Offsets(pinpointName.get(), podType.get(), customPodScalar, forwardPodReversed, strafePodReversed));
 
         result("name", pinpointName.get());
 
@@ -84,7 +84,7 @@ class CustomPodScalar extends TuningOpMode<Double> {
     }
 
     @Override
-    protected Double runTuningOpMode() throws InterruptedException {
+    protected Double runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
             c.ticksPerUnit.set(OptionalDouble.of(1.0));
@@ -119,7 +119,7 @@ class ForwardDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
-    protected Boolean runTuningOpMode() throws InterruptedException {
+    protected Boolean runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
             c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
@@ -135,6 +135,7 @@ class ForwardDirection extends TuningOpMode<Boolean> {
         PinpointLocalizer localizer = new PinpointLocalizer(hardwareMap, config);
         localizer.setPose(new Pose(0, 0));
         waitForStart();
+
         while (!isStopRequested()) {
             localizer.update();
         }
@@ -151,7 +152,7 @@ class StrafeDirection extends TuningOpMode<Boolean> {
     public StrafeDirection(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar) {
         super("Strafe Direction Identification",
                 "Determines if your strafe pod needs to be reversed. \n"
-                        + "Push your robot to the side and then stop the Opmode",
+                        + "Push your robot to the left and then stop the Opmode",
                 true);
         this.name = name;
         this.podType = podType;
@@ -159,7 +160,7 @@ class StrafeDirection extends TuningOpMode<Boolean> {
     }
 
     @Override
-    protected Boolean runTuningOpMode() throws InterruptedException {
+    protected Boolean runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
             c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
@@ -183,11 +184,12 @@ class StrafeDirection extends TuningOpMode<Boolean> {
     }
 }
 
-class Offsets extends TuningOpMode<ArrayList<Double>> {
+class Offsets extends TuningOpMode<List<Double>> {
     String name;
     PinpointTuner.PodType podType;
     OptionalDouble customPodScalar =  OptionalDouble.empty();
     boolean forwardPodReversed, strafePodReversed;
+    private Pose previous = Pose.zero();
 
     public Offsets(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar, Boolean forwardPodReversed, Boolean strafePodReversed) {
         super("Offsets Identification",
@@ -204,7 +206,7 @@ class Offsets extends TuningOpMode<ArrayList<Double>> {
     }
 
     @Override
-    protected ArrayList<Double> runTuningOpMode() throws InterruptedException {
+    protected List<Double> runTuningOpMode() {
         PinpointConfig config = new PinpointConfig(c -> {
             c.name.set(name);
             c.xPodDirection.set(forwardPodReversed ? GoBildaPinpointDriver.EncoderDirection.REVERSED : GoBildaPinpointDriver.EncoderDirection.FORWARD);
@@ -220,13 +222,18 @@ class Offsets extends TuningOpMode<ArrayList<Double>> {
         PinpointLocalizer localizer = new PinpointLocalizer(hardwareMap, config);
         localizer.setPose(new Pose(0, 0));
         localizer.update();
+
         waitForStart();
+
         while (!isStopRequested()) {
+            previous = localizer.pose();
             localizer.update();
         }
-        return new ArrayList<>(Arrays.asList(
-            ((-localizer.pose().y()) / 2.0),
-            ((-localizer.pose().x()) / 2.0)
-        ));
+
+        if (localizer.pose().x() != Pose.zero().x() || localizer.pose().y() != Pose.zero().y()) {
+            previous =  localizer.pose();
+        }
+
+        return List.of(((-previous.y()) / 2.0), ((-previous.x()) / 2.0));
     }
 }
