@@ -9,6 +9,7 @@ import com.pedropathing.tuning.autotune.Inputs;
 import com.pedropathing.tuning.autotune.Procedure;
 import com.pedropathing.tuning.autotune.TuningOpMode;
 import com.pedropathing.utils.Angle;
+import com.pedropathing.utils.Utils;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -51,7 +52,7 @@ public class ForesightTuner extends Procedure {
         double headingQuadratic = headingBraking.get(1);
 
         Inputs distanceBrakingInput = inputs("Distance", "The distance to drive in inches for the Forward and Strafe Braking Identifiers");
-        Inputs.Field<Double> distanceBraking = distanceBrakingInput.d("Distance").withDefault(48.0);
+        Inputs.Field<Double> distanceBraking = distanceBrakingInput.d("Distance").withDefault(36.0);
         awaitInputs(distanceBrakingInput);
 
         List<Double> forwardBraking = runOpMode(new ForwardBraking(localizerFunction, drivetrainFunction, headingLinear, headingQuadratic, heading, distanceBraking.get()));
@@ -62,8 +63,8 @@ public class ForesightTuner extends Procedure {
         double strafeLinear = strafeBraking.get(0);
         double strafeQuadratic = strafeBraking.get(1);
 
-        List<Double> forwardTranslational = runOpMode(new ForwardTranslational(localizerFunction, drivetrainFunction, forwardLinear, forwardQuadratic));
-        List<Double> strafeTranslational = runOpMode(new StrafeTranslational(localizerFunction, drivetrainFunction, strafeLinear, strafeQuadratic));
+        List<Double> forwardTranslational = runOpMode(new ForwardTranslational(localizerFunction, drivetrainFunction));
+        List<Double> strafeTranslational = runOpMode(new StrafeTranslational(localizerFunction, drivetrainFunction));
 
         double forwardTranslationalPrimary = forwardTranslational.get(0);
         double forwardTranslationalSecondary = forwardTranslational.get(1);
@@ -295,7 +296,7 @@ class ForwardDeceleration extends TuningOpMode<Double> {
             previousVelocity = currentVelocity;
             previousTimeNano = currentTimeNano;
 
-            if (Math.abs(currentVelocity) < 0.1) {
+            if (Math.abs(currentVelocity) <= 1) {
                 end = true;
             }
         }
@@ -383,7 +384,7 @@ class StrafeDeceleration extends TuningOpMode<Double> {
             previousVelocity = currentVelocity;
             previousTimeNano = currentTimeNano;
 
-            if (Math.abs(currentVelocity) < 0.1) {
+            if (Math.abs(currentVelocity) <= 1) {
                 end = true;
             }
         }
@@ -411,7 +412,7 @@ class HeadingBraking extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Drivetrain> drivetrainFunction;
 
     private static double[] POWERS;
-    public static double MAX_BRAKE_TIME = 4; //seconds, the robot shouldn't take longer than this to brake
+    public static double MAX_BRAKE_TIME = 3; //seconds, the robot shouldn't take longer than this to brake
 
     public static int trials = 12;
     public static double maxPower = 1;
@@ -555,7 +556,7 @@ class HeadingTuner extends TuningOpMode<Double> {
     private static final double POWER = 0.4;
     private static final double RUNTIME = 1.2;
     private static final int SAMPLES = 15;
-    private static final double BETA = 2.83;
+    public static double ALPHA = 18.25;
 
     private double tau;
     private double K;
@@ -618,13 +619,13 @@ class HeadingTuner extends TuningOpMode<Double> {
         }
 
         drivetrain.drive(new DrivePowers(0.0, 0.0, 0.0), true);
-        return calculatekP(BETA);
+        return calculatekP(ALPHA);
     }
 
     private double calculatekP(double alpha) {
         kV = 1 / K;
         kA = tau / K;
-        return K * tau * alpha * alpha;
+        return tau * alpha * alpha / K;
     }
 
     private void systemIdentification() {
@@ -666,10 +667,10 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
     private final double headingKP;
 
     private double[] POWERS;
-    public double MAX_BRAKE_TIME = 2.0;
+    public double MAX_BRAKE_TIME = 7.0;
     public int trials = 5;
     public double maxPower = 0.7;
-    public double minPower = 0.2;
+    public double minPower = 0.3;
     public double bias = 1.5;
     public double brakingPower = 0.001;
     public double distance;
@@ -710,6 +711,8 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
         waitForStart();
         timer.reset();
 
+        drivetrain.drive(new DrivePowers(maxPower,0,0), false);
+
         while (state != State.DONE && !isStopRequested()) {
             localizer.update();
             direction = (iteration % 2 == 0) ? 1 : -1;
@@ -732,7 +735,7 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
                     break;
                 }
                 case BRAKE: {
-                    if (localizer.velocity().toVector2D().magnitude() > 0.001 && timer.seconds() < MAX_BRAKE_TIME) {
+                    if (localizer.velocity().toVector2D().magnitude() > 0.25 && timer.seconds() < MAX_BRAKE_TIME) {
                         brake(drivetrain, localizer);
                         break;
                     }
@@ -741,6 +744,7 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
                     break;
                 }
                 case WAIT: {
+                    drivetrain.stop();
                     if (timer.seconds() > IDLE_SECONDS) state = State.DRIVE;
                     break;
                 }
@@ -760,9 +764,11 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
         double angularVel = localizer.velocity().omega;
         double brakeDist = headingLinear * angularVel +
                 headingQuadratic * angularVel * angularVel * Math.signum(angularVel);
-        double error = Angle.normalizeSigned(-localizer.pose().heading() - brakeDist);
-        return headingKP * error;
+        double headingError = Angle.normalizeSigned(-localizer.pose().heading());
+        double error = headingError - brakeDist;
+        return Utils.clamp(headingKP * error, -0.3, 1.0) / 2;
     }
+
 
     private void drive(Drivetrain drivetrain, Localizer localizer) {
         drivetrain.drive(new DrivePowers(power * direction, 0.0, getHeadingPower(localizer)), false);
@@ -826,10 +832,10 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
     private final double headingKP;
 
     private double[] POWERS;
-    public double MAX_TURN_TIME = 2.0;
+    public double MAX_BRAKE_TIME = 7.0;
     public  int trials = 5;
     public double maxPower = 1;
-    public double minPower = 0.2;
+    public double minPower = 0.3;
     public double bias = 1.5;
     public double brakingPower = 0.001;
     public double distance;
@@ -870,6 +876,8 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
         waitForStart();
         timer.reset();
 
+        drivetrain.drive(new DrivePowers(0,maxPower,0), false);
+
         while (state != State.DONE && !isStopRequested()) {
             localizer.update();
             direction = (iteration % 2 == 0) ? 1 : -1;
@@ -880,7 +888,7 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
             switch (state) {
                 case DRIVE: {
                     if ((direction == 1 && localizer.pose().y() > distance) ||
-                            (direction == -1 && localizer.pose().y() < 12)) {
+                            (direction == -1 && localizer.pose().y() <= 6)) {
                         startPosition = localizer.pose().toVector2D();
                         measuredVelocity = localizer.velocity().toVector2D().magnitude();
 
@@ -893,7 +901,7 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
                     break;
                 }
                 case BRAKE: {
-                    if (localizer.velocity().toVector2D().magnitude() > 0.001 && timer.seconds() < MAX_TURN_TIME) {
+                    if (localizer.velocity().toVector2D().magnitude() > 0.25 && timer.seconds() < MAX_BRAKE_TIME) {
                         brake(drivetrain, localizer);
                         break;
                     }
@@ -902,6 +910,7 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
                     break;
                 }
                 case WAIT: {
+                    drivetrain.stop();
                     if (timer.seconds() > IDLE_SECONDS) state = State.DRIVE;
                     break;
                 }
@@ -921,8 +930,9 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
         double angularVel = localizer.velocity().omega;
         double brakeDist = headingLinear * angularVel +
                 headingQuadratic * angularVel * angularVel * Math.signum(angularVel);
-        double error = Angle.normalizeSigned(-localizer.pose().heading() - brakeDist);
-        return headingKP * error;
+        double headingError = Angle.normalizeSigned(-localizer.pose().heading());
+        double error = headingError - brakeDist;
+        return Utils.clamp(headingKP * error, -0.3, 1.0) / 2;
     }
 
     private void drive(Drivetrain drivetrain, Localizer localizer) {
@@ -982,11 +992,9 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
 class ForwardTranslational extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
-    private final double linearBrakeCoeff;
-    private final double quadraticBrakeCoeff;
 
-    private final double BETA_LARGE = 0.124;
-    private final double BETA_SMALL = 0.0715;
+    public static double ALPHA_LARGE = 10.2;
+    public static double ALPHA_SMALL = 6.2;
     private final double VEL_AGGRESSIVENESS = 0.85;
     private final double POWER = 0.4;
     private final double RUNTIME = 1.2;
@@ -1003,13 +1011,10 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
     private boolean done = false;
     private double lastTime = 0.0;
 
-    public ForwardTranslational(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction,
-                                double linearBrakeCoeff, double quadraticBrakeCoeff) {
+    public ForwardTranslational(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Forward Translational", "A tuner for finding the Forward Translational kP coefficients using system identification. This will move around 12-24 inches in front of the robot and then stop.", false);
         this.localizerFunction = localizerFunction;
         this.drivetrainFunction = drivetrainFunction;
-        this.linearBrakeCoeff = linearBrakeCoeff;
-        this.quadraticBrakeCoeff = quadraticBrakeCoeff;
     }
 
     @Override
@@ -1057,8 +1062,8 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
 
         drivetrain.drive(new DrivePowers(0.0, 0.0, 0.0), true);
 
-        double kP_large = calculatekP(BETA_LARGE);
-        double kP_small = calculatekP(BETA_SMALL);
+        double kP_large = calculatekP(ALPHA_LARGE);
+        double kP_small = calculatekP(ALPHA_SMALL);
 
         //  kP_large, kP_small, coast kV, and brake kV (scaled by aggressiveness factor)
         return List.of(kP_large, kP_small, kV, kV * VEL_AGGRESSIVENESS);
@@ -1067,7 +1072,7 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
     private double calculatekP(double alpha) {
         kV = 1 / K;
         kA = tau / K;
-        return K * tau * alpha * alpha;
+        return tau * alpha * alpha / K;
     }
 
     private void systemIdentification() {
@@ -1104,11 +1109,8 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
 class StrafeTranslational extends TuningOpMode<List<Double>> {
     Function<HardwareMap, Localizer> localizerFunction;
     Function<HardwareMap, Drivetrain> drivetrainFunction;
-    private final double linearBrakeCoeff;
-    private final double quadraticBrakeCoeff;
-
-    private final double BETA_LARGE = 0.124;
-    private final double BETA_SMALL = 0.0715;
+    public static double ALPHA_LARGE = 10.2;
+    public static double ALPHA_SMALL = 6.2;
     private final double POWER = 0.4;
     private final double RUNTIME = 1.2;
     private final int SAMPLES = 15;
@@ -1124,13 +1126,10 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
     private boolean done = false;
     private double lastTime = 0.0;
 
-    public StrafeTranslational(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction,
-                               double linearBrakeCoeff, double quadraticBrakeCoeff) {
+    public StrafeTranslational(Function<HardwareMap, Localizer> localizerFunction, Function<HardwareMap, Drivetrain> drivetrainFunction) {
         super("Strafe Translational", "A tuner for finding the Strafe Translational kP coefficients using system identification. This will move around 12-24 inches to the left and right of the robot and then stop.", false);
         this.localizerFunction = localizerFunction;
         this.drivetrainFunction = drivetrainFunction;
-        this.linearBrakeCoeff = linearBrakeCoeff;
-        this.quadraticBrakeCoeff = quadraticBrakeCoeff;
     }
 
     @Override
@@ -1178,8 +1177,8 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
 
         drivetrain.drive(new DrivePowers(0.0, 0.0, 0.0), true);
 
-        double kP_large = calculatekP(BETA_LARGE);
-        double kP_small = calculatekP(BETA_SMALL);
+        double kP_large = calculatekP(ALPHA_LARGE);
+        double kP_small = calculatekP(ALPHA_SMALL);
 
         return List.of(kP_large, kP_small);
     }
@@ -1187,7 +1186,7 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
     private double calculatekP(double alpha) {
         kV = 1 / K;
         kA = tau / K;
-        return K * tau * alpha * alpha;
+        return tau * alpha * alpha / K;
     }
 
     private void systemIdentification() {

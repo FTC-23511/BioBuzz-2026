@@ -9,8 +9,6 @@ import com.pedropathing.tuning.autotune.Procedure;
 import com.pedropathing.tuning.autotune.TuningOpMode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TwoWheelTuner extends Procedure {
@@ -317,6 +315,7 @@ class TwoWheelOffsets extends TuningOpMode<List<Double>> {
     double strafeTicksToInches;
     boolean forwardPodReversed;
     boolean strafePodReversed;
+    Pose previous;
 
     TwoWheelOffsets(
             TwoWheelSetup values,
@@ -326,7 +325,7 @@ class TwoWheelOffsets extends TuningOpMode<List<Double>> {
             boolean strafePodReversed
     ) {
         super(
-                "Offsets Identification",
+                "PinpointOffsets Identification",
                 "Automatically identifies the offsets for your Two Wheel localizer.\n"
                         + "Spin your robot in place 180 degrees and then stop the Opmode",
                 true
@@ -354,14 +353,17 @@ class TwoWheelOffsets extends TuningOpMode<List<Double>> {
         localizer.setPose(new Pose(0, 0));
         localizer.update();
 
-        List<Double> offsets = Collections.emptyList();
-
         waitForStart();
-        while (opModeIsActive()) {
+
+        while (!isStopRequested()) {
+            previous = localizer.pose();
             localizer.update();
-            offsets = Arrays.asList(localizer.pose().y() / 2.0, -localizer.pose().x() / 2.0);
         }
 
-        return offsets;
+        if (localizer.pose().x() != Pose.zero().x() || localizer.pose().y() != Pose.zero().y()) {
+            previous =  localizer.pose();
+        }
+
+        return List.of(((-previous.y()) / 2.0), ((-previous.x()) / 2.0));
     }
 }

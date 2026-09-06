@@ -39,7 +39,7 @@ public class MecanumTuner extends Procedure {
         result("backLeftDirection", backLeftDirection);
         result("backRightDirection", backRightDirection);
 
-        code(Language.JAVA, "public static MecanumConfig config = new MecanumConfig(c -> {\n" +
+        code(Language.JAVA, "public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {\n" +
                 "    c.frontLeftName.set(\"" + frontLeftName.get() + "\");\n" +
                 "    c.frontRightName.set(\"" + frontRightName.get() + "\");\n" +
                 "    c.backLeftName.set(\"" + backLeftName.get() + "\");\n" +
