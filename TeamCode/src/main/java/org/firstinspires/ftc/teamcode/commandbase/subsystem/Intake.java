@@ -42,6 +42,8 @@ public class Intake extends SubsystemBase {
                 intakeMotor.setPower(REVERSE_POWER);
                 break;
             case STOP:
+                intakeMotor.setPower(0.0);
+                break;
             default:
                 intakeMotor.setPower(0.0);
                 break;
