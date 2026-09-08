@@ -62,13 +62,10 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
                 .debugLog(false)
                 .build();
 
-        // hardware
-
-
         // subsystems
-        drive = new Drive();
-        intake = new Intake();
-        intake = new Intake();
+        drive = new Drive(hwMap);
+        intake = new Intake(hwMap);
+        camera = new Camera(hwMap, drive);
         launcher = new Launcher();
 
         CommandScheduler.getInstance().setBulkReading(hwMap, LynxModule.BulkCachingMode.MANUAL);
