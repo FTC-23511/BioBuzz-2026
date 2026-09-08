@@ -157,7 +157,7 @@ class ForwardVelocity extends TuningOpMode<Double> {
             localizer.update();
             if (Math.abs(localizer.pose().x()) > distance) {
                 end = true;
-                drivetrain.drive(DrivePowers.zero(), true);
+                drivetrain.stop();
             } else {
                 drivetrain.drive(power, true);
                 double currentVelocity = Math.abs(localizer.twist().toVector2D().x());
@@ -166,7 +166,7 @@ class ForwardVelocity extends TuningOpMode<Double> {
             }
         }
 
-        drivetrain.drive(DrivePowers.zero(), true);
+        drivetrain.stop();
         double average = 0;
         for (double velocity : velocities) {
                 average += velocity;
@@ -212,7 +212,7 @@ class StrafeVelocity extends TuningOpMode<Double> {
             localizer.update();
             if (Math.abs(localizer.pose().y()) > distance) {
                 end = true;
-                drivetrain.drive(DrivePowers.zero(), true);
+                drivetrain.stop();
             } else {
                 drivetrain.drive(power, false);
                 double currentVelocity = Math.abs(localizer.twist().toVector2D().y());
@@ -221,7 +221,7 @@ class StrafeVelocity extends TuningOpMode<Double> {
             }
         }
 
-        drivetrain.drive(DrivePowers.zero(), true);
+        drivetrain.stop();
         double average = 0;
         for (double velocity : velocities) {
             average += velocity;
@@ -276,7 +276,7 @@ class ForwardDeceleration extends TuningOpMode<Double> {
                 previousTimeNano = System.nanoTime();
 
                 stopping = true;
-                drivetrain.drive(DrivePowers.zero(), true);
+                drivetrain.stop(false);
             }
         }
 
@@ -301,7 +301,7 @@ class ForwardDeceleration extends TuningOpMode<Double> {
             }
         }
 
-        drivetrain.drive(DrivePowers.zero(), true);
+        drivetrain.stop(false);
 
         double average = 0;
 
@@ -364,7 +364,7 @@ class StrafeDeceleration extends TuningOpMode<Double> {
                 previousTimeNano = System.nanoTime();
 
                 stopping = true;
-                drivetrain.drive(DrivePowers.zero(), true);
+                drivetrain.stop(false);
             }
         }
 
@@ -389,7 +389,7 @@ class StrafeDeceleration extends TuningOpMode<Double> {
             }
         }
 
-        drivetrain.drive(DrivePowers.zero(), true);
+        drivetrain.stop(false);
 
         double average = 0;
 
@@ -722,7 +722,7 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
 
             switch (state) {
                 case DRIVE: {
-                    if ((direction == 1 && localizer.pose().x() >= distance) || (direction == -1 && localizer.pose().x() <= 12)) {
+                    if ((direction > 0 && localizer.pose().x() >= distance) || (direction < 0 && localizer.pose().x() <= 12)) {
                         startPosition = localizer.pose().toVector2D();
                         measuredVelocity = localizer.velocity().toVector2D().magnitude();
 
@@ -887,8 +887,8 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
 
             switch (state) {
                 case DRIVE: {
-                    if ((direction == 1 && localizer.pose().y() > distance) ||
-                            (direction == -1 && localizer.pose().y() <= 6)) {
+                    if ((direction > 0 && localizer.pose().y() > distance) ||
+                            (direction < 0 && localizer.pose().y() <= 6)) {
                         startPosition = localizer.pose().toVector2D();
                         measuredVelocity = localizer.velocity().toVector2D().magnitude();
 

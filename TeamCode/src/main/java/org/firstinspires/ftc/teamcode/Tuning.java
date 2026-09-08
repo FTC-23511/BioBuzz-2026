@@ -23,6 +23,7 @@ public class Tuning {
         return new OctoquadTuner();
     }
 
+
     @Tuner
     public static Procedure pinpointTuner() {
         return new PinpointTuner();
