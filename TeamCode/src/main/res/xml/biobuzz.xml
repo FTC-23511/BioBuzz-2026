@@ -9,25 +9,15 @@
             <goBILDA5202SeriesMotor name="BR" port="2"/>
             <goBILDA5202SeriesMotor name="FR" port="3"/>
 
-<!--            <goBILDAPinpoint name="pinpoint" port="0" bus="1"/>/-->
-            <OctoQuadFWv3 name="octoquad" port="0" bus="1"/>-->
+<!--        <OctoQuadFWv3 name="octoquad" port="0" bus="1"/>-->
         </LynxModule>
     </LynxUsbDevice>
 
     <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ2F3UGC" parentModuleAddress="2">
         <LynxModule name="Expansion Hub 2" port="2">
-            <goBILDA5202SeriesMotor name="rightLaunchMotor" port="0"/>
-            <goBILDA5202SeriesMotor name="leftLaunchMotor" port="1"/>
-            <goBILDA5202SeriesMotor name="intakeMotor" port="2"/>
+            <goBILDA5202SeriesMotor name="intakeMotor" port="0"/>
 
-<!--            <AnalogInput name="turretEncoder" port="3"/>-->
-
-            <Servo name="hoodServo" port="3"/>
-            <Servo name="rampServo" port="5"/>
 
         </LynxModule>
     </LynxUsbDevice>
-
-    <!--TODO: Update webcam serial number with the color arducam one-->
-    <Webcam name="Webcam 1" serialNumber="UC762" />
 </Robot>

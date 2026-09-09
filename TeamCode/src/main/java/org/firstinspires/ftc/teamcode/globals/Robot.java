@@ -1,25 +1,17 @@
 package org.firstinspires.ftc.teamcode.globals;
 
-import android.util.Size;
-
-import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
+import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
-import com.seattlesolvers.solverslib.hardware.motors.MotorGroup;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Intake;
-import org.firstinspires.ftc.teamcode.commandbase.subsystem.Camera;
+import org.firstinspires.ftc.teamcode.commandbase.subsystem.Vision;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Launcher;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
-import org.firstinspires.ftc.vision.opencv.ColorRange;
-import org.firstinspires.ftc.vision.opencv.ImageRegion;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,15 +27,25 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         return instance;
     }
 
+    // Logging
     public Profiler profiler;
     public File profilerFile;
     public File logCatFile;
 
-
+    // Subsystems
     public Drive drive;
     public Intake intake;
-    public Camera camera;
+    public Vision vision;
     public Launcher launcher;
+
+    // Intake
+    public MotorEx intakeMotor;
+
+    // Drive
+    public MotorEx FL;
+    public MotorEx FR;
+    public MotorEx BL;
+    public MotorEx BR;
 
     public void init(HardwareMap hwMap) {
         // logging
@@ -63,12 +65,29 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
                 .build();
 
         // hardware
+        intakeMotor = new MotorEx(hwMap, "intakeMotor").setCachingTolerance(0.001);
 
+        FL = new MotorEx(hwMap, "FL")
+                .setCachingTolerance(0.001);
+        FR = new MotorEx(hwMap, "FR")
+                .setCachingTolerance(0.001);
+        BL = new MotorEx(hwMap, "BL")
+                .setCachingTolerance(0.001);
+        BR = new MotorEx(hwMap, "BR")
+                .setCachingTolerance(0.001);
+
+        FL.setInverted(true);
+        BL.setInverted(true);
+
+        FL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        FR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        BL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        BR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         // subsystems
         drive = new Drive();
         intake = new Intake();
-        intake = new Intake();
+        intake.init();
         launcher = new Launcher();
 
         CommandScheduler.getInstance().setBulkReading(hwMap, LynxModule.BulkCachingMode.MANUAL);

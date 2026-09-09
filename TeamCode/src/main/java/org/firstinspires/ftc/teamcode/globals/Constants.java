@@ -34,14 +34,16 @@ public class Constants {
             return multiplier;
         }
     }
-
-
     public static OpModeType OP_MODE_TYPE;
-
     public static boolean TESTING_OP_MODE = false;
-
     public static AllianceColor ALLIANCE_COLOR = AllianceColor.BLUE;
-
-
     public static Pose END_POSE = null;
+
+    // Intake
+    public static double INTAKE_TRANSFER_SPEED = 1.0;
+    public static double INTAKE_FORWARD_SPEED = 1.0;
+    public static double INTAKE_REVERSE_SPEED = -1.0;
+
+    // Drive
+    public static double MIN_DRIVE_SPEED = 0.35;
 }
