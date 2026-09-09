@@ -7,13 +7,13 @@ import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.STICK_ALPHA
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.RunCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
+import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.globals.PedroConstants;
 
@@ -64,21 +64,21 @@ public class Drive extends SubsystemBase {
     }
 
     public RunCommand driveCommand(GamepadEx driver) {
-        return new RunCommand(() -> handleManualDrive(driver.gamepad), this);
+        return new RunCommand(() -> handleManualDrive(driver), this);
     }
 
-    private void handleManualDrive(Gamepad gamepad) {
+    private void handleManualDrive(GamepadEx driver) {
         double dt = timer.seconds();
         if (dt > 0.1) dt = 0.01;
         timer.reset();
 
-        double rawY = -gamepad.left_stick_y;
-        double rawX = -gamepad.left_stick_x;
-        double rawRx = -gamepad.right_stick_x;
+        double rawY = driver.getLeftY();
+        double rawX = -driver.getLeftX();
+        double rawRx = -driver.getRightX();
 
         double outY, outX, outRx;
 
-        if (gamepad.left_stick_button) {
+        if (driver.getButton(GamepadKeys.Button.LEFT_STICK_BUTTON)) {
             double targetAX = (rawX - vX) / (dt > 0 ? dt : 0.01);
             double targetAY = (rawY - vY) / (dt > 0 ? dt : 0.01);
             double targetARx = (rawRx - vRx) / (dt > 0 ? dt : 0.01);

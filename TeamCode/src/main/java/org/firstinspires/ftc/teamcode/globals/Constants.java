@@ -38,4 +38,6 @@ public class Constants {
 
 
     public static Pose END_POSE = null;
+    public static double INTAKE_POWER = 0.9;
+    public static double REVERSE_POWER = -0.9;
 }

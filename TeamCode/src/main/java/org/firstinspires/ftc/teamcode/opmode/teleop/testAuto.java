@@ -19,16 +19,18 @@ import org.firstinspires.ftc.teamcode.globals.Robot;
 
 
 @Autonomous(name = "testAutoMaybeWorksProbablyNot")
-public class testAutoMaybeWorksProbablyNot extends CommandOpMode {
+public class testAuto extends CommandOpMode {
 
     private final Robot robot = Robot.getInstance();
     private GamepadEx driver;
 
     @Override
     public void initialize() {
-        Constants.OP_MODE_TYPE = OpModeType.Auto;
-
         super.reset();
+
+        Constants.OP_MODE_TYPE = OpModeType.AUTO;
+        Constants.TESTING_OP_MODE = false;
+    }
 
     @Override
     public void preRun() {
@@ -38,3 +40,4 @@ public class testAutoMaybeWorksProbablyNot extends CommandOpMode {
     public void end() {
     }
 }
+

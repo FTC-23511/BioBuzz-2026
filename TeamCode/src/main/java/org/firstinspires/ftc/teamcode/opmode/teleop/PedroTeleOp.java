@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.globals.Constants.OpModeType;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
-import com.seattlesolvers.solverslib.command.button.Trigger;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
@@ -26,9 +25,10 @@ public class PedroTeleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
-        Constants.OP_MODE_TYPE = OpModeType.TELEOP;
-
         super.reset();
+
+        Constants.OP_MODE_TYPE = OpModeType.TELEOP;
+        Constants.TESTING_OP_MODE = false;
 
         robot.init(hardwareMap);
 
@@ -42,13 +42,13 @@ public class PedroTeleOp extends CommandOpMode {
         // Driver controls
         robot.drive.setDefaultCommand(robot.drive.driveCommand(driver));
 
-        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(new IntakeCommand(robot.intake, Intake.IntakeState.INTAKE));
-        driver.getGamepadButton(GamepadKeys.Button.A).whenReleased(new IntakeCommand(robot.intake, Intake.IntakeState.STOP));
-        driver.getGamepadButton(GamepadKeys.Button.B).whenPressed(new IntakeCommand(robot.intake, Intake.IntakeState.REVERSE));
-        driver.getGamepadButton(GamepadKeys.Button.B).whenReleased(new IntakeCommand(robot.intake, Intake.IntakeState.STOP));
+        driver.getGamepadButton(GamepadKeys.Button.CROSS).whenPressed(new IntakeCommand(robot.intake, Intake.IntakeState.INTAKE));
+        driver.getGamepadButton(GamepadKeys.Button.CROSS).whenReleased(new IntakeCommand(robot.intake, Intake.IntakeState.STOP));
+        driver.getGamepadButton(GamepadKeys.Button.CIRCLE).whenPressed(new IntakeCommand(robot.intake, Intake.IntakeState.REVERSE));
+        driver.getGamepadButton(GamepadKeys.Button.CIRCLE).whenReleased(new IntakeCommand(robot.intake, Intake.IntakeState.STOP));
 
-        new Trigger(() -> driver.getButton(GamepadKeys.Button.OPTIONS) || driver.getButton(GamepadKeys.Button.START))
-                .whenActive(new InstantCommand(() -> robot.drive.resetPose(0.0)));
+        driver.getGamepadButton(GamepadKeys.Button.OPTIONS)
+                .whenPressed(new InstantCommand(() -> robot.drive.resetPose(0.0)));
     }
 
     @Override

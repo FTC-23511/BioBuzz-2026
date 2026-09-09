@@ -4,8 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+import static org.firstinspires.ftc.teamcode.globals.Constants.INTAKE_POWER;
+import static org.firstinspires.ftc.teamcode.globals.Constants.REVERSE_POWER;
 
 /**
  * Intake roller with three states: stopped, intaking, and reversed.
@@ -19,8 +20,7 @@ public class Intake extends SubsystemBase {
         STOP
     }
 
-    public static double INTAKE_POWER = 0.9;
-    public static double REVERSE_POWER = -0.9;
+
 
     private IntakeState intakeState = IntakeState.STOP;
     private final DcMotor intakeMotor;
@@ -50,27 +50,7 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public IntakeState getState() {
-        return intakeState;
-    }
-
     public void setState(IntakeState state) {
         intakeState = state;
-    }
-
-    public void setPower(double power) {
-        intakeMotor.setPower(power);
-    }
-
-    public InstantCommand intakeCommand() {
-        return new InstantCommand(() -> setState(IntakeState.INTAKE), this);
-    }
-
-    public InstantCommand reverseCommand() {
-        return new InstantCommand(() -> setState(IntakeState.REVERSE), this);
-    }
-
-    public InstantCommand stopCommand() {
-        return new InstantCommand(() -> setState(IntakeState.STOP), this);
     }
 }
