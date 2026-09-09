@@ -27,7 +27,4 @@
 
         </LynxModule>
     </LynxUsbDevice>
-
-    <!--TODO: Update webcam serial number with the color arducam one-->
-    <Webcam name="Webcam 1" serialNumber="UC762" />
 </Robot>

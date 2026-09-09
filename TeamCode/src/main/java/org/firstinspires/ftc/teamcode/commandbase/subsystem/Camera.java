@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.commandbase.subsystem;
 
-import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.ALIGN_UPDATE_SECONDS;
+/*import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.ALIGN_UPDATE_SECONDS;
 import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.CAMERA_PITCH_OFFSET;
 import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.DESIRED_TAG_ID;
 import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.FILTER_ALPHA;
@@ -26,18 +26,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Webcam + AprilTag pipeline. Detection/filtering runs on a dedicated background thread (mirroring
- * the polling cadence the original vision thread used) so it never blocks the command scheduler
- * loop.
- *
- * <p>The original OpMode drove the robot to the tag itself using Follower#followPath /
- * #breakFollowing / #setMaxPower. Those methods don't exist on this project's PedroPathing version
- * (com.pedropathing:core:3.0.0-SNAPSHOT), which replaced them with a Path/Curve/Modifier builder
- * API. Auto-align is stubbed out below - {@link #isAligning()} still reports state for
- * telemetry/RGB, and tag offsets are still filtered, but nothing drives the robot yet. Rebuild
- * {@link #processTagDetection} against the new Path API to restore the auto-drive behavior.
- */
+
 @Config
 public class Camera extends SubsystemBase {
 
@@ -167,11 +156,7 @@ public class Camera extends SubsystemBase {
 
     public boolean isConverged() { return isConverged; }
 
-    /**
-     * Blocks (during OpMode init, before the match starts) until the camera stream is live, then
-     * locks exposure/gain for consistent tag detection. Safe to call from
-     * {@code CommandOpMode#initialize()}.
-     */
+  
     public void configureExposureBlocking(LinearOpMode opMode, Telemetry telemetry) {
         ElapsedTime timer = new ElapsedTime();
         double timeoutSeconds = 3.0;
@@ -204,4 +189,4 @@ public class Camera extends SubsystemBase {
         telemetry.addData("Camera", "Controls set successfully.");
         telemetry.update();
     }
-}
+}*/

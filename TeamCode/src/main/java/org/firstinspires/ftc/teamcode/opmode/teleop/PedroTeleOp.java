@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.opmode.teleop;
 
 import static org.firstinspires.ftc.teamcode.globals.Constants.OpModeType;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+// import com.acmerobotics.dashboard.FtcDashboard;
+// import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
@@ -12,15 +12,13 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commandbase.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Intake;
 import org.firstinspires.ftc.teamcode.globals.Constants;
 import org.firstinspires.ftc.teamcode.globals.Robot;
 
-/**
- * Command-based port of the offseason Pedro Pathing TeleOp: robot-centric driving with heading
- * lock and AprilTag-assisted alignment on the left trigger.
- */
-@TeleOp(name = "Pedro TeleOp", group = "TeleOp")
+
+@TeleOp(name = "Pedro TeleOp")
 public class PedroTeleOp extends CommandOpMode {
 
     private final Robot robot = Robot.getInstance();
@@ -36,19 +34,18 @@ public class PedroTeleOp extends CommandOpMode {
 
         driver = new GamepadEx(gamepad1);
 
-        Telemetry dashboardTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        robot.camera.configureExposureBlocking(this, dashboardTelemetry);
+        // Telemetry dashboardTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        // robot.camera.configureExposureBlocking(this, dashboardTelemetry);
 
         robot.intake.setState(Intake.IntakeState.STOP);
 
         // Driver controls
         robot.drive.setDefaultCommand(robot.drive.driveCommand(driver));
 
-        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(robot.intake.intakeCommand());
-        driver.getGamepadButton(GamepadKeys.Button.A).whenReleased(robot.intake.stopCommand());
-        driver.getGamepadButton(GamepadKeys.Button.B).whenPressed(robot.intake.reverseCommand());
-        driver.getGamepadButton(GamepadKeys.Button.B).whenReleased(robot.intake.stopCommand());
+        driver.getGamepadButton(GamepadKeys.Button.A).whenPressed(new IntakeCommand(robot.intake, Intake.IntakeState.INTAKE));
+        driver.getGamepadButton(GamepadKeys.Button.A).whenReleased(new IntakeCommand(robot.intake, Intake.IntakeState.STOP));
+        driver.getGamepadButton(GamepadKeys.Button.B).whenPressed(new IntakeCommand(robot.intake, Intake.IntakeState.REVERSE));
+        driver.getGamepadButton(GamepadKeys.Button.B).whenReleased(new IntakeCommand(robot.intake, Intake.IntakeState.STOP));
 
         new Trigger(() -> driver.getButton(GamepadKeys.Button.OPTIONS) || driver.getButton(GamepadKeys.Button.START))
                 .whenActive(new InstantCommand(() -> robot.drive.resetPose(0.0)));

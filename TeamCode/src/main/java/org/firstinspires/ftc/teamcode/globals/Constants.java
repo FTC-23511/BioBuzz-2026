@@ -24,12 +24,6 @@ public class Constants {
             this.multiplier = multiplier;
         }
 
-        /**
-         * Returns the sign used to mirror alliance-dependent values measured from the center of
-         * the field.
-         *
-         * @return 1 for blue, -1 for red
-         */
         public int getMultiplier() {
             return multiplier;
         }

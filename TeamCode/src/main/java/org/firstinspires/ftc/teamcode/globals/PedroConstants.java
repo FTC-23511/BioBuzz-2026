@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class PedroConstants {
     public static MecanumConfig driveConfig = new MecanumConfig(
             c -> {
+                c.mass.set(7.0);
                 c.frontLeftName.set("FL");
                 c.backLeftName.set("BL");
                 c.frontRightName.set("FR");

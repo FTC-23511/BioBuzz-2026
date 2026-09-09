@@ -14,12 +14,12 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Drive;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Intake;
-import org.firstinspires.ftc.teamcode.commandbase.subsystem.Camera;
+// import org.firstinspires.ftc.teamcode.commandbase.subsystem.Camera;
 import org.firstinspires.ftc.teamcode.commandbase.subsystem.Launcher;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
-import org.firstinspires.ftc.vision.opencv.ColorRange;
-import org.firstinspires.ftc.vision.opencv.ImageRegion;
+// import org.firstinspires.ftc.vision.VisionPortal;
+// import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
+// import org.firstinspires.ftc.vision.opencv.ColorRange;
+// import org.firstinspires.ftc.vision.opencv.ImageRegion;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public Drive drive;
     public Intake intake;
-    public Camera camera;
+    // public Camera camera;
     public Launcher launcher;
 
     public void init(HardwareMap hwMap) {
@@ -65,27 +65,16 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         // subsystems
         drive = new Drive(hwMap);
         intake = new Intake(hwMap);
-        camera = new Camera(hwMap, drive);
+        // camera = new Camera(hwMap, drive);
         launcher = new Launcher();
 
         CommandScheduler.getInstance().setBulkReading(hwMap, LynxModule.BulkCachingMode.MANUAL);
     }
 
-    /**
-     * Moves the mechanisms into their starting positions. This is kept out of
-     * {@link #init(HardwareMap)} so nothing moves until the OpMode is actually started.
-     */
     public void initHasMovement() {
 
     }
 
-    /**
-     * Writes the profiler data and logcat to files on the Robot Controller, on a background
-     * thread so the OpMode is not stalled.
-     *
-     * @param profilerFile the file to write profiler results to
-     * @param logCatFile   the file to write the logcat dump to
-     */
     public void exportProfiler(File profilerFile, File logCatFile) {
         RobotLog.i("Starting async profiler and logcat export to: " + profilerFile.getAbsolutePath());
 

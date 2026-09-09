@@ -19,10 +19,10 @@ public class Intake extends SubsystemBase {
         STOP
     }
 
-    public static double INTAKE_POWER = 0.8;
-    public static double REVERSE_POWER = -0.8;
+    public static double INTAKE_POWER = 0.9;
+    public static double REVERSE_POWER = -0.9;
 
-    public static IntakeState intakeState = IntakeState.STOP;
+    private IntakeState intakeState = IntakeState.STOP;
     private final DcMotor intakeMotor;
 
     public Intake(HardwareMap hardwareMap) {
@@ -48,6 +48,10 @@ public class Intake extends SubsystemBase {
                 intakeMotor.setPower(0.0);
                 break;
         }
+    }
+
+    public IntakeState getState() {
+        return intakeState;
     }
 
     public void setState(IntakeState state) {
