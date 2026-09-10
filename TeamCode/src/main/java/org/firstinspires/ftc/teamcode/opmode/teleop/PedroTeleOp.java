@@ -2,17 +2,15 @@ package org.firstinspires.ftc.teamcode.opmode.teleop;
 
 import static org.firstinspires.ftc.teamcode.globals.Constants.OpModeType;
 
-// import com.acmerobotics.dashboard.FtcDashboard;
-// import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commandbase.commands.IntakeCommand;
-import org.firstinspires.ftc.teamcode.commandbase.subsystem.Intake;
+import org.firstinspires.ftc.teamcode.commandbase.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.globals.Constants;
 import org.firstinspires.ftc.teamcode.globals.Robot;
 
@@ -22,6 +20,7 @@ public class PedroTeleOp extends CommandOpMode {
 
     private final Robot robot = Robot.getInstance();
     private GamepadEx driver;
+    private ElapsedTime timer;
 
     @Override
     public void initialize() {
@@ -34,8 +33,7 @@ public class PedroTeleOp extends CommandOpMode {
 
         driver = new GamepadEx(gamepad1);
 
-        // Telemetry dashboardTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        // robot.camera.configureExposureBlocking(this, dashboardTelemetry);
+        // robot.camera.configureExposureBlocking(this, telemetryEx);
 
         robot.intake.setState(Intake.IntakeState.STOP);
 
@@ -52,13 +50,30 @@ public class PedroTeleOp extends CommandOpMode {
     }
 
     @Override
+    public void initialize_loop() {
+        robot.initializeLoop(gamepad1);
+    }
+
+    @Override
     public void preRun() {
         robot.initHasMovement();
-        robot.drive.resetHeadingToCurrent();
+    }
+
+    @Override
+    public void run() {
+        if (timer == null) {
+            timer = new ElapsedTime();
+        }
+
+        timer.reset();
+
+        // Runs the command scheduler
+        robot.updateLoop();
     }
 
     @Override
     public void end() {
         robot.intake.setState(Intake.IntakeState.STOP);
+        robot.exportProfiler(robot.profilerFile, robot.logCatFile);
     }
 }

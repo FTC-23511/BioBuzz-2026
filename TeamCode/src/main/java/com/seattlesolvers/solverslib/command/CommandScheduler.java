@@ -77,7 +77,7 @@ public final class CommandScheduler {
     private boolean m_inRunLoop;
     private final List<Command> m_toCancel = new ArrayList<>();
     private boolean clearHubCache = false;
-    private List<LynxModule> allHubs;
+    public List<LynxModule> allHubs;
 
     CommandScheduler() {
 

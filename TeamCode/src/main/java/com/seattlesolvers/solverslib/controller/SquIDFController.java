@@ -48,7 +48,9 @@ public class SquIDFController extends PIDFController {
         prevErrorVal = errorVal_p;
 
         double currentTimeStamp = (double) System.nanoTime() / 1E9;
-        if (lastTimeStamp == 0) lastTimeStamp = currentTimeStamp;
+        if (lastTimeStamp == 0) {
+            lastTimeStamp = currentTimeStamp;
+        }
         period = currentTimeStamp - lastTimeStamp;
         lastTimeStamp = currentTimeStamp;
 
@@ -65,10 +67,8 @@ public class SquIDFController extends PIDFController {
             errorVal_v = 0;
         }
 
-        /*
-        if total error is the integral from 0 to t of e(t')dt', and
-        e(t) = sp - pv, then the total error, E(t), equals sp*t - pv*t.
-         */
+        // if total error is the integral from 0 to t of e(t')dt', and
+        // e(t) = sp - pv, then the total error, E(t), equals sp*t - pv*t.
         totalError += period * (setPoint - measuredValue);
         totalError = MathUtils.clamp(totalError, integrationControl.getMinIntegral(), integrationControl.getMaxIntegral());
         if ((Math.signum(totalError) != Math.signum(errorVal_p))) {

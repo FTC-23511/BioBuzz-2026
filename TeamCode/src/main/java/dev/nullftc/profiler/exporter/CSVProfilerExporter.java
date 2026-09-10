@@ -8,16 +8,26 @@ import java.util.List;
 import dev.nullftc.profiler.Profiler;
 import dev.nullftc.profiler.entry.ProfilerEntry;
 
+/**
+ * Exports profiler entries to a CSV file.
+ */
 public class CSVProfilerExporter implements ProfilerExporter {
     private final File file;
 
+    /**
+     * Constructs a new CSVProfilerExporter.
+     *
+     * @param file the file to export to
+     */
     public CSVProfilerExporter(File file) {
         this.file = file;
     }
 
     @Override
     public void export(List<ProfilerEntry> entries) {
-        if (file == null) return;
+        if (file == null) {
+            return;
+        }
 
         try {
             File parent = file.getParentFile();

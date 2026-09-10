@@ -2,13 +2,10 @@ package org.firstinspires.ftc.teamcode.opmode.teleop;
 
 import static org.firstinspires.ftc.teamcode.globals.Constants.OpModeType;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
-import com.seattlesolvers.solverslib.util.TelemetryEx;
 
 import org.firstinspires.ftc.teamcode.globals.Constants;
 import org.firstinspires.ftc.teamcode.globals.Robot;
@@ -21,8 +18,6 @@ public class ExampleTeleOp extends CommandOpMode {
     public GamepadEx operator;
 
     public ElapsedTime timer;
-
-    TelemetryEx telemetryEx = new TelemetryEx(new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()));
 
     private final Robot robot = Robot.getInstance();
 
@@ -57,12 +52,10 @@ public class ExampleTeleOp extends CommandOpMode {
     public void run() {
         // TODO: Add robot drive movement here
 
-        telemetryEx.addData("Loop Time", timer.milliseconds());
         timer.reset();
 
-        // DO NOT REMOVE ANY LINES BELOW! Runs the command scheduler and updates telemetry
+        // DO NOT REMOVE ANY LINES BELOW! Runs the command scheduler
         super.run();
-        telemetryEx.update();
     }
 
     @Override

@@ -45,16 +45,12 @@ public class DeadwheelCalibrator extends LinearOpMode
 
         while (!isStopRequested() && !bumperPress())
         {
-            telemetry.addLine(String.format("Relocate the robot such that it can be pushed %dFT in the +X direction (refer to the coordinate system in the quick start guide). Press the right bumper when you are ready to continue.", FEET_TO_PUSH));
-            telemetry.update();
             sleep(20);
         }
 
         oq.resetAllPositions();
         while (!isStopRequested() && !bumperPress())
         {
-            telemetry.addLine(String.format("Push the robot exactly %dFT in the +X direction. Press the right bumper when complete.", FEET_TO_PUSH));
-            telemetry.update();
             sleep(20);
         }
 
@@ -65,16 +61,12 @@ public class DeadwheelCalibrator extends LinearOpMode
 
         while (!isStopRequested() && !bumperPress())
         {
-            telemetry.addLine(String.format("Relocate the robot such that it can be pushed %dFT in the +Y direction (refer to the coordinate system in the quick start guide). Press the right bumper when you are ready to continue.", FEET_TO_PUSH));
-            telemetry.update();
             sleep(20);
         }
 
         oq.resetAllPositions();
         while (!isStopRequested() && !bumperPress())
         {
-            telemetry.addLine(String.format("Push the robot exactly %dFT in the +Y direction. Press the right bumper when complete.", FEET_TO_PUSH));
-            telemetry.update();
             sleep(20);
         }
 
@@ -87,12 +79,6 @@ public class DeadwheelCalibrator extends LinearOpMode
 
         while (!isStopRequested())
         {
-            telemetry.addLine(String.format("It looks like your X wheel is plugged into port %d and your Y wheel is plugged into port %d. Please verify this.", x, y));
-            telemetry.addData("X wheel port should be reversed", xNeedsReversed);
-            telemetry.addData("Y wheel port should be reversed", yNeedsReversed);
-            telemetry.addData("X wheel ticks/mm", Math.abs(xCount / (FEET_TO_PUSH*FT_TO_MM)));
-            telemetry.addData("Y wheel ticks/mm", Math.abs(yCount / (FEET_TO_PUSH*FT_TO_MM)));
-            telemetry.update();
             sleep(100);
         }
     }

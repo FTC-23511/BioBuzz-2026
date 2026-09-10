@@ -17,14 +17,14 @@ public class SensorRevTOFDistance implements SensorDistanceEx {
     /**
      * Our distance sensor object.
      *
-     * @see DistanceSensor
+     * {@link DistanceSensor}
      */
     private final DistanceSensor distanceSensor;
 
     /**
      * The List that holds the {@code DistanceTarget} (s) associated with this device.
      *
-     * @see DistanceTarget
+     * {@link DistanceTarget}
      */
     private final List<DistanceTarget> targetList;
 
@@ -84,13 +84,17 @@ public class SensorRevTOFDistance implements SensorDistanceEx {
 
     @Override
     public void addTarget(DistanceTarget target) {
-        if (!targetList.contains(target)) targetList.add(target);
+        if (!targetList.contains(target)) {
+            targetList.add(target);
+        }
     }
 
     @Override
     public void addTargets(List<DistanceTarget> targets) {
         for (DistanceTarget target : targets) {
-            if (!targetList.contains(target)) targetList.add(target);
+            if (!targetList.contains(target)) {
+                targetList.add(target);
+            }
         }
     }
 

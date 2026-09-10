@@ -15,10 +15,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+/**
+ * Drivetrain geometry, localizer, and Foresight braking configuration used to build the
+ * PedroPathing {@link Follower} via {@link #create(HardwareMap)}. Tunable mechanism and
+ * OpMode constants live separately in {@link Constants} and {@link TeleOpConstants}.
+ */
 public class PedroConstants {
-    public static MecanumConfig driveConfig = new MecanumConfig(
+    public static final MecanumConfig DRIVE_CONFIG = new MecanumConfig(
             c -> {
-                c.mass.set(7.0);
                 c.frontLeftName.set("FL");
                 c.backLeftName.set("BL");
                 c.frontRightName.set("FR");
@@ -33,7 +37,7 @@ public class PedroConstants {
             }
     );
 
-    public static OctoQuadConfig localizerConfig = new OctoQuadConfig(c -> {
+    public static final OctoQuadConfig LOCALIZER_CONFIG = new OctoQuadConfig(c -> {
         c.name.set("octoquad");
         c.ticksPerUnit.set(19.89436789);
         c.encoderResolutionUnit.set(DistanceUnit.MM);
@@ -48,7 +52,7 @@ public class PedroConstants {
         c.yPodOffset.set(0.0);
     });
 
-    public static ForesightConfig foresightConfig = new ForesightConfig(
+    public static final ForesightConfig FORESIGHT_CONFIG = new ForesightConfig(
             c -> {
                 Controller largeTranslationalForward = Controller.proportional(.3);
                 Controller smallTranslationalForward = Controller.proportional(.1);
@@ -84,7 +88,13 @@ public class PedroConstants {
             }
     );
 
+    /**
+     * Builds the PedroPathing follower for the drivetrain.
+     *
+     * @param h hardware map to resolve the drive motors and localizer from
+     * @return a follower configured with {@link #DRIVE_CONFIG}, {@link #LOCALIZER_CONFIG}, and {@link #FORESIGHT_CONFIG}
+     */
     public static Follower create(HardwareMap h) {
-        return new Follower(new OctoQuadLocalizer(h, localizerConfig), new Mecanum(h, driveConfig), new Foresight(foresightConfig));
+        return new Follower(new OctoQuadLocalizer(h, LOCALIZER_CONFIG), new Mecanum(h, DRIVE_CONFIG), new Foresight(FORESIGHT_CONFIG));
     }
 }

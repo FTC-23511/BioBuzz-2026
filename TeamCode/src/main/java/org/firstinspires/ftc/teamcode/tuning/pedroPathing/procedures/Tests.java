@@ -224,8 +224,6 @@ class TestsLocalization extends TuningOpMode<Boolean> {
         while (opModeIsActive()) {
             follower.manual(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             follower.update();
-            telemetry.addData("Pose", follower.pose());
-            telemetry.update();
         }
         return true;
     }

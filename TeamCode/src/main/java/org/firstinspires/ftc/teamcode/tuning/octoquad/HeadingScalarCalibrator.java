@@ -47,20 +47,13 @@ public class HeadingScalarCalibrator extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        telemetry.setMsTransmissionInterval(50);
-
         oq = hardwareMap.get(OctoQuad.class, "octoquad");
-
-        telemetry.addLine("Place the robot on a level surface, against a solid edge. The baseboard of a wall usually works well for this. Press the right bumper to continue.");
-        telemetry.update();
 
         while (!isStopRequested() && !bumperPress())
         {
             sleep(20);
         }
 
-        telemetry.addLine("We now are going to perform the initial calibration on the IMU. DO NOT move the robot during this process!");
-        telemetry.update();
         oq.setLocalizerImuHeadingScalar(1.0f);
         oq.resetLocalizerAndCalibrateIMU();
 
@@ -77,14 +70,13 @@ public class HeadingScalarCalibrator extends LinearOpMode
 
         while (System.currentTimeMillis() - startTime < SETTLE_MS && !isStopRequested())
         {
-            int secRemaining = (int) Math.round((SETTLE_MS - (System.currentTimeMillis() - startTime)) / (1000.0));
-            telemetry.addLine(String.format("Initial calibration complete. Waiting for the continuous calibration algorithm to settle... DO NOT MOVE THE ROBOT... (%d)", secRemaining));
-            telemetry.update();
             sleep(20);
         }
 
-        telemetry.addLine("We are now ready to measure the scale factor. Press the right bumper to continue.");
-        telemetry.update();
+        while (!isStopRequested() && !bumperPress())
+        {
+            sleep(20);
+        }
 
         oq.setLocalizerHeading(0.0f);
 
@@ -106,9 +98,7 @@ public class HeadingScalarCalibrator extends LinearOpMode
                 integratedHeading = wraps*(2*Math.PI) + data.heading_rad;
                 lastNormalizedHeading = data.heading_rad;
 
-                telemetry.addLine(String.format("Gently rotate the robot %d turns COUNTER-CLOCKWISE, and return it to the same solid reference. DO NOT PITCH OR ROLL THE ROBOT WHILE ROTATING! Press the right bumper when this is complete.\n", NUM_ROTATIONS));
-                telemetry.addData("Current uncalibrated heading (deg)", integratedHeading*180/Math.PI);
-                telemetry.update();
+                sleep(20);
             }
         }
 
@@ -121,9 +111,6 @@ public class HeadingScalarCalibrator extends LinearOpMode
         {
             while (!isStopRequested())
             {
-                telemetry.addData("Your determined heading scalar is", scaleFactor);
-                telemetry.addLine("This scale factor is outside the expected range. You may have performed the calibration incorrectly, or there may be a hardware problem.");
-                telemetry.update();
                 sleep(20);
             }
         }
@@ -131,24 +118,15 @@ public class HeadingScalarCalibrator extends LinearOpMode
         {
             while (!isStopRequested())
             {
-                telemetry.addData("Your determined heading scalar is", scaleFactor);
-                telemetry.addLine("If desired, press the right bumper to save this to the OctoQuad's internal flash memory. Otherwise, take note of this scalar so you can load it from your OpMode.");
-                telemetry.update();
-
                 sleep(20);
 
                 if (bumperPress())
                 {
-                    telemetry.addLine("Saving scalar to flash");
-                    telemetry.update();
-
                     oq.setLocalizerImuHeadingScalar((float) scaleFactor);
                     oq.saveParametersToFlash();
 
                     while (!isStopRequested())
                     {
-                        telemetry.addLine("Saved!");
-                        telemetry.update();
                         sleep(20);
                     }
 

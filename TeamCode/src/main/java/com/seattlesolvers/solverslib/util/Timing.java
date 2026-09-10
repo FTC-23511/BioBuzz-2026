@@ -89,8 +89,11 @@ public class Timing {
          * If the timer is paused, return the time at which the timer was paused.
          */
         public long elapsedTime() {
-            if (timerOn) return time.time(unit);
-            else return unit.convert(pauseTime, TimeUnit.NANOSECONDS);
+            if (timerOn) {
+                return time.time(unit);
+            } else {
+                return unit.convert(pauseTime, TimeUnit.NANOSECONDS);
+            }
         }
 
         /**

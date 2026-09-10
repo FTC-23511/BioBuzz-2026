@@ -2,18 +2,25 @@ package org.firstinspires.ftc.teamcode.globals;
 
 import com.acmerobotics.dashboard.config.Config;
 
+/**
+ * Tunable TeleOp constants for driver control, heading lock, and vision-assisted alignment,
+ * editable live through FTC Dashboard.
+ */
 @Config
 public class TeleOpConstants {
     public static double DRIVE_SPEED_LIMIT = 0.75;
     public static double TURN_SPEED_LIMIT = 0.675;
     public static double DEADZONE = 0.05;
     public static double STICK_ALPHA = 0.4;
+    public static double DRIVE_MAX_ACCEL = 3.5;
+    public static double DRIVE_JERK_MULTIPLIER = 12.0;
 
     public static double HEADING_LOCK_KP = 0.55;
     public static double HEADING_LOCK_KD = 0.09;
     public static double HEADING_LOCK_MAX_POWER = 0.65;
     public static double HEADING_LOCK_TOLERANCE_RAD = Math.toRadians(1.0);
     public static double HEADING_LOCK_RAMP_SEC = 0.65;
+    public static double HEADING_LOCK_SETTLE_VELOCITY_THRESHOLD = 0.12;
 
     public static int DESIRED_TAG_ID = 586;
     public static double DESIRED_DISTANCE = 19.5;

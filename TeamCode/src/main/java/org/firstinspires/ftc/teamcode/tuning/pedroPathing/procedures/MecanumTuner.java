@@ -67,8 +67,9 @@ public class MecanumTuner extends Procedure {
             direction[0] = directionField.get();
         });
 
-        if (!correctMotor[0])
+        if (!correctMotor[0]) {
             abort("The wrong motor spun. Check that your motors are plugged into the correct ports, and that they are configured correctly. Then, try again.");
+        }
 
         return direction[0];
     }

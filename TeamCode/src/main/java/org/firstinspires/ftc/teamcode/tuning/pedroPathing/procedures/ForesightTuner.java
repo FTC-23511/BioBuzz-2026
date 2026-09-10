@@ -533,7 +533,9 @@ class HeadingBraking extends TuningOpMode<List<Double>> {
             double min,
             double bias
     ) {
-        if (count < 2) return new double[]{  max};
+        if (count < 2) {
+            return new double[]{max};
+        }
 
         double[] values = new double[count];
 
@@ -597,7 +599,9 @@ class HeadingTuner extends TuningOpMode<Double> {
         while (!done && !isStopRequested()) {
             double now = timer.seconds();
             double dt = now - lastTime;
-            if (dt <= 0) dt = 1e-6;
+            if (dt <= 0) {
+                dt = 1e-6;
+            }
             lastTime = now;
 
             localizer.update();
@@ -637,7 +641,9 @@ class HeadingTuner extends TuningOpMode<Double> {
         int start = Math.max(0, N - SAMPLES);
         double samples = N - start;
         double sum = 0;
-        for (int i = start; i < N; i++) sum += velocities.get(i);
+        for (int i = start; i < N; i++) {
+            sum += velocities.get(i);
+        }
         double A = sum / samples;
         this.K = A / POWER;
 
@@ -645,8 +651,12 @@ class HeadingTuner extends TuningOpMode<Double> {
         List<Double> x = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             double vel = velocities.get(i) / POWER;
-            if (vel > 0.8 * K) continue;
-            if (vel < 0.1 * K) continue;
+            if (vel > 0.8 * K) {
+                continue;
+            }
+            if (vel < 0.1 * K) {
+                continue;
+            }
             y.add(Math.log(K - vel));
             x.add(times.get(i));
         }
@@ -654,7 +664,9 @@ class HeadingTuner extends TuningOpMode<Double> {
                 x.toArray(new Double[0]),
                 y.toArray(new Double[0])
         );
-        if (linReg[1] == 0) throw new IllegalArgumentException("Failed calibration.");
+        if (linReg[1] == 0) {
+            throw new IllegalArgumentException("Failed calibration.");
+        }
         this.tau = -1.0/linReg[1];
     }
 }
@@ -745,7 +757,9 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
                 }
                 case WAIT: {
                     drivetrain.stop();
-                    if (timer.seconds() > IDLE_SECONDS) state = State.DRIVE;
+                    if (timer.seconds() > IDLE_SECONDS) {
+                        state = State.DRIVE;
+                    }
                     break;
                 }
                 case DONE: {}
@@ -813,7 +827,9 @@ class ForwardBraking extends TuningOpMode<List<Double>> {
     }
 
     private static double[] biasedGradient(int count, double max, double min, double bias) {
-        if (count < 2) return new double[]{max};
+        if (count < 2) {
+            return new double[]{max};
+        }
         double[] values = new double[count];
         for (int i = 0; i < count; i++) {
             double t = (double) i / (count - 1);
@@ -911,7 +927,9 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
                 }
                 case WAIT: {
                     drivetrain.stop();
-                    if (timer.seconds() > IDLE_SECONDS) state = State.DRIVE;
+                    if (timer.seconds() > IDLE_SECONDS) {
+                        state = State.DRIVE;
+                    }
                     break;
                 }
                 case DONE: {}
@@ -978,7 +996,9 @@ class StrafeBraking extends TuningOpMode<List<Double>> {
     }
 
     private static double[] biasedGradient(int count, double max, double min, double bias) {
-        if (count < 2) return new double[]{max};
+        if (count < 2) {
+            return new double[]{max};
+        }
         double[] values = new double[count];
         for (int i = 0; i < count; i++) {
             double t = (double) i / (count - 1);
@@ -1039,7 +1059,9 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
         while (!done && !isStopRequested()) {
             double now = timer.seconds();
             double dt = now - lastTime;
-            if (dt <= 0) dt = 1e-6;
+            if (dt <= 0) {
+                dt = 1e-6;
+            }
             lastTime = now;
 
             localizer.update();
@@ -1084,7 +1106,9 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
         int start = Math.max(0, N - SAMPLES);
         double samples = N - start;
         double sum = 0;
-        for (int i = start; i < N; i++) sum += velocities.get(i);
+        for (int i = start; i < N; i++) {
+            sum += velocities.get(i);
+        }
         double A = sum / samples;
         this.K = A / POWER;
 
@@ -1092,8 +1116,12 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
         List<Double> x = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             double vel = velocities.get(i) / POWER;
-            if (vel > 0.8 * K) continue;
-            if (vel < 0.1 * K) continue;
+            if (vel > 0.8 * K) {
+                continue;
+            }
+            if (vel < 0.1 * K) {
+                continue;
+            }
             y.add(Math.log(K - vel));
             x.add(times.get(i));
         }
@@ -1101,7 +1129,9 @@ class ForwardTranslational extends TuningOpMode<List<Double>> {
                 x.toArray(new Double[0]),
                 y.toArray(new Double[0])
         );
-        if (linReg[1] == 0) throw new IllegalArgumentException("Failed calibration.");
+        if (linReg[1] == 0) {
+            throw new IllegalArgumentException("Failed calibration.");
+        }
         this.tau = -1.0/linReg[1];
     }
 }
@@ -1154,7 +1184,9 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
         while (!done && !isStopRequested()) {
             double now = timer.seconds();
             double dt = now - lastTime;
-            if (dt <= 0) dt = 1e-6;
+            if (dt <= 0) {
+                dt = 1e-6;
+            }
             lastTime = now;
 
             localizer.update();
@@ -1198,7 +1230,9 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
         int start = Math.max(0, N - SAMPLES);
         double samples = N - start;
         double sum = 0;
-        for (int i = start; i < N; i++) sum += velocities.get(i);
+        for (int i = start; i < N; i++) {
+            sum += velocities.get(i);
+        }
         double A = sum / samples;
         this.K = A / POWER;
 
@@ -1206,8 +1240,12 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
         List<Double> x = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             double vel = velocities.get(i) / POWER;
-            if (vel > 0.8 * K) continue;
-            if (vel < 0.1 * K) continue;
+            if (vel > 0.8 * K) {
+                continue;
+            }
+            if (vel < 0.1 * K) {
+                continue;
+            }
             y.add(Math.log(K - vel));
             x.add(times.get(i));
         }
@@ -1215,7 +1253,9 @@ class StrafeTranslational extends TuningOpMode<List<Double>> {
                 x.toArray(new Double[0]),
                 y.toArray(new Double[0])
         );
-        if (linReg[1] == 0) throw new IllegalArgumentException("Failed calibration.");
+        if (linReg[1] == 0) {
+            throw new IllegalArgumentException("Failed calibration.");
+        }
         this.tau = -1.0/linReg[1];
     }
 }

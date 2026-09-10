@@ -50,9 +50,6 @@ public class LocalizerTest extends LinearOpMode
     static final float TCP_OFFSET_Y_MM = -156.70f;
     static final float IMU_SCALAR = 1.0323f;
 
-    // Conversion factor for radians --> degrees
-    static final double RAD2DEG = 180/Math.PI;
-
     // For tracking the number of CRC mismatches
     int badPacketCount = 0;
     int goodPacketCount = 0;
@@ -74,9 +71,6 @@ public class LocalizerTest extends LinearOpMode
         // "OctoQuadFTC" on the Robot Controller - the same entry Pedro Pathing's
         // OctoQuadLocalizer looks up, so the calibrators and the follower agree.
         OctoQuad oq = hardwareMap.get(OctoQuad.class, "octoquad");
-
-        // Crank up the telemetry update frequency to make the data display a bit less laggy
-        telemetry.setMsTransmissionInterval(50);
 
         // Configure a whole bunch of parameters for the absolute localizer
         // --> Read the quick start guide for an explanation of these!!
@@ -104,10 +98,6 @@ public class LocalizerTest extends LinearOpMode
          */
         while (opModeInInit())
         {
-            telemetry.addData("Firmware Version", oq.getFirmwareVersionString());
-            telemetry.addData("Localizer Status", oq.getLocalizerStatus());
-            telemetry.addData("Heading Axis Detection", oq.getLocalizerHeadingAxisChoice());
-            telemetry.update();
             sleep(100);
         }
 
@@ -119,9 +109,6 @@ public class LocalizerTest extends LinearOpMode
             OctoQuad.LocalizerStatus status = oq.getLocalizerStatus();
             if(status != OctoQuad.LocalizerStatus.RUNNING)
             {
-                telemetry.addData("Status", status);
-                telemetry.addLine("Waiting for localizer to report RUNNING status");
-                telemetry.update();
                 sleep(100);
             }
             else
@@ -157,27 +144,15 @@ public class LocalizerTest extends LinearOpMode
                 {
                     long deltaTime = curTime - prevTime;
                     statistics.add(deltaTime);
-                    telemetry.addData("Loop Hz", 1e3/statistics.getMean());
                 }
                 prevTime = curTime;
 
-                telemetry.addData("Localizer Status", localizer.localizerStatus);
-                telemetry.addData("Heading deg", localizer.heading_rad * RAD2DEG);
-                telemetry.addData("Heading dps", localizer.velHeading_radS * RAD2DEG);
-                telemetry.addData("X mm", localizer.posX_mm);
-                telemetry.addData("Y mm", localizer.posY_mm);
-                telemetry.addData("VX mm/s", localizer.velX_mmS);
-                telemetry.addData("VY mm/s", localizer.velY_mmS);
                 goodPacketCount++;
             }
             else
             {
-                telemetry.addLine("Data CRC not valid");
                 badPacketCount++;
             }
-
-            // Print some statistics about CRC validation
-            telemetry.addLine(String.format("CRC Mismatch Count: %d/%d (%.3f%%)", badPacketCount, goodPacketCount, ((float)badPacketCount/(float)goodPacketCount)*100.0f));
 
             // Demonstrate the ability to "teleport" the localizer position on demand.
             if (gamepad1.left_bumper)
@@ -190,9 +165,6 @@ public class LocalizerTest extends LinearOpMode
                 // Or you can teleport just heading
                 oq.setLocalizerHeading((float) Math.PI);
             }
-
-            // Send updated telemetry to the Driver Station
-            telemetry.update();
         }
     }
 }
