@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.commandbase.subsystem;
+package org.firstinspires.ftc.teamcode.commandbase.subsystems;
 
 import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.DEADZONE;
 import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.DRIVE_SPEED_LIMIT;
