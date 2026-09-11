@@ -16,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.commandbase.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.commandbase.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.globals.PedroConstants;
 import static org.firstinspires.ftc.teamcode.globals.Constants.*;
 // import org.firstinspires.ftc.vision.VisionPortal;
 // import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
@@ -84,7 +85,8 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setPower(0.0);
 
-        drive = new Drive(hwMap);
+        Follower follower = PedroConstants.create(hwMap);
+        drive = new Drive(follower);
         intake = new Intake(intakeMotor);
         // camera = new Camera(hwMap, drive);
         // launcher = new Launcher();

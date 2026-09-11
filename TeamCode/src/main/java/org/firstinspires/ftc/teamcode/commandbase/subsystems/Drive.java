@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.globals.TeleOpConstants.STICK_ALPHA
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.seattlesolvers.solverslib.command.RunCommand;
@@ -15,7 +14,6 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
-import org.firstinspires.ftc.teamcode.globals.PedroConstants;
 //
 @Config
 public class Drive extends SubsystemBase {
@@ -34,8 +32,8 @@ public class Drive extends SubsystemBase {
     private final HeadingLock headingLock;
     private final ElapsedTime timer = new ElapsedTime();
 
-    public Drive(HardwareMap hardwareMap) {
-        this.follower = PedroConstants.create(hardwareMap);
+    public Drive(Follower follower) {
+        this.follower = follower;
         this.headingLock = new HeadingLock(follower);
         timer.reset();
     }
