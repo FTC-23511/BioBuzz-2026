@@ -5,6 +5,7 @@ import android.util.Size;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
@@ -15,8 +16,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.commandbase.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.commandbase.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.Camera;
-import org.firstinspires.ftc.teamcode.commandbase.subsystems.Launcher;
 import static org.firstinspires.ftc.teamcode.globals.Constants.*;
 // import org.firstinspires.ftc.vision.VisionPortal;
 // import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
@@ -49,9 +48,7 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public Drive drive;
     public Intake intake;
-
-    private IntakeState intakeState = IntakeState.STOP;
-    private final DcMotor intakeMotor;
+    private DcMotor intakeMotor;
     // public Camera camera;
     // public Launcher launcher;
 
@@ -81,14 +78,14 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
                 .debugLog(false)
                 .build();
 
+    
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setPower(0.0);
 
-        // subsystems
         drive = new Drive(hwMap);
-        intake = new Intake();
+        intake = new Intake(intakeMotor);
         // camera = new Camera(hwMap, drive);
         // launcher = new Launcher();
 

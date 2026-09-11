@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.commandbase.subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
+
 import static org.firstinspires.ftc.teamcode.globals.Constants.INTAKE_POWER;
 import static org.firstinspires.ftc.teamcode.globals.Constants.REVERSE_POWER;
 
@@ -20,8 +19,11 @@ public class Intake extends SubsystemBase {
         STOP
     }
 
-    public Intake() {
-        robot = Robot.getInstance();
+    private final DcMotor intakeMotor;
+    private IntakeState intakeState = IntakeState.STOP;
+
+    public Intake(DcMotor intakeMotor) {
+        this.intakeMotor = intakeMotor;
     }
 
     @Override
