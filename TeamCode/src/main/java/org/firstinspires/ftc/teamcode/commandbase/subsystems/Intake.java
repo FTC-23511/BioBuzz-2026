@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase {
     public Intake(DcMotor intakeMotor) {
         this.intakeMotor = intakeMotor;
     }
-
+//
     @Override
     public void periodic() {
         switch (intakeState) {
