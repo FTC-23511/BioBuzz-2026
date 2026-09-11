@@ -20,16 +20,8 @@ public class Intake extends SubsystemBase {
         STOP
     }
 
-
-
-    private IntakeState intakeState = IntakeState.STOP;
-    private final DcMotor intakeMotor;
-
-    public Intake(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeMotor.setPower(0.0);
+    public Intake() {
+        robot = Robot.getInstance();
     }
 
     @Override

@@ -49,6 +49,9 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
 
     public Drive drive;
     public Intake intake;
+
+    private IntakeState intakeState = IntakeState.STOP;
+    private final DcMotor intakeMotor;
     // public Camera camera;
     // public Launcher launcher;
 
@@ -78,9 +81,14 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
                 .debugLog(false)
                 .build();
 
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setPower(0.0);
+
         // subsystems
         drive = new Drive(hwMap);
-        intake = new Intake(hwMap.get(DcMotor.class, "intakeMotor"));
+        intake = new Intake();
         // camera = new Camera(hwMap, drive);
         // launcher = new Launcher();
 
