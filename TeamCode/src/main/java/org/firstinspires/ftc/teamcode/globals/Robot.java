@@ -80,14 +80,14 @@ public class Robot extends com.seattlesolvers.solverslib.command.Robot {
                 .build();
 
     
-        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeMotor.setPower(0.0);
+//        intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
+//        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        intakeMotor.setPower(0.0);
 
         Follower follower = PedroConstants.create(hwMap);
         drive = new Drive(follower);
-        intake = new Intake(intakeMotor);
+//        intake = new Intake(intakeMotor);
         // camera = new Camera(hwMap, drive);
         // launcher = new Launcher();
 

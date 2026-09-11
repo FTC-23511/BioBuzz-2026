@@ -7,13 +7,16 @@ import com.pedropathing.math.Matrix;
 import com.pedropathing.math.Vector2D;
 import com.pedropathing.revhub.drivetrains.Mecanum;
 import com.pedropathing.revhub.drivetrains.MecanumConfig;
-import com.pedropathing.revhub.localizers.OctoQuadConfig;
-import com.pedropathing.revhub.localizers.OctoQuadLocalizer;
-import com.qualcomm.hardware.digitalchickenlabs.OctoQuad;
+import com.pedropathing.revhub.localizers.PinpointConfig;
+import com.pedropathing.revhub.localizers.PinpointLocalizer;
+
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.OptionalDouble;
 
 /**
  * Drivetrain geometry, localizer, and Foresight braking configuration used to build the
@@ -37,14 +40,12 @@ public class PedroConstants {
             }
     );
 
-    public static final OctoQuadConfig LOCALIZER_CONFIG = new OctoQuadConfig(c -> {
-        c.name.set("octoquad");
-        c.ticksPerUnit.set(19.89436789);
+    public static final PinpointConfig LOCALIZER_CONFIG = new PinpointConfig(c -> {
+        c.name.set("pinpoint");
+        c.ticksPerUnit.set(OptionalDouble.of(19.89436789));
         c.encoderResolutionUnit.set(DistanceUnit.MM);
-        c.headingScalar.set(1.0168);
-        c.xPodDirection.set(OctoQuad.EncoderDirection.REVERSE);
-        c.yPodDirection.set(OctoQuad.EncoderDirection.FORWARD);
-        c.i2cRecoveryMode.set(OctoQuad.I2cRecoveryMode.MODE_1_PERIPH_RST_ON_FRAME_ERR);
+        c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.FORWARD);
         c.offsetUnits.set(DistanceUnit.INCH);
         //c.xPodOffset.set(-3.95);
         //c.yPodOffset.set(-5.67);
@@ -95,6 +96,6 @@ public class PedroConstants {
      * @return a follower configured with {@link #DRIVE_CONFIG}, {@link #LOCALIZER_CONFIG}, and {@link #FORESIGHT_CONFIG}
      */
     public static Follower create(HardwareMap h) {
-        return new Follower(new OctoQuadLocalizer(h, LOCALIZER_CONFIG), new Mecanum(h, DRIVE_CONFIG), new Foresight(FORESIGHT_CONFIG));
+        return new Follower(new PinpointLocalizer(h, LOCALIZER_CONFIG), new Mecanum(h, DRIVE_CONFIG), new Foresight(FORESIGHT_CONFIG));
     }
 }

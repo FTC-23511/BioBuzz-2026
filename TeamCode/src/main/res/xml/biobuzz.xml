@@ -9,21 +9,21 @@
             <goBILDA5202SeriesMotor name="BR" port="2"/>
             <goBILDA5202SeriesMotor name="FR" port="3"/>
 
-<!--            <goBILDAPinpoint name="pinpoint" port="0" bus="1"/>/-->
-            <OctoQuadFWv3 name="octoquad" port="0" bus="1"/>-->
+            <goBILDAPinpoint name="pinpoint" port="0" bus="1"/>/
+<!--            <OctoQuadFWv3 name="octoquad" port="0" bus="1"/>&ndash;&gt;-->
         </LynxModule>
     </LynxUsbDevice>
 
     <LynxUsbDevice name="Expansion Hub Portal 1" serialNumber="DQ2F3UGC" parentModuleAddress="2">
         <LynxModule name="Expansion Hub 2" port="2">
-            <goBILDA5202SeriesMotor name="rightLaunchMotor" port="0"/>
-            <goBILDA5202SeriesMotor name="leftLaunchMotor" port="1"/>
-            <goBILDA5202SeriesMotor name="intakeMotor" port="2"/>
+<!--            <goBILDA5202SeriesMotor name="rightLaunchMotor" port="0"/>-->
+<!--            <goBILDA5202SeriesMotor name="leftLaunchMotor" port="1"/>-->
+<!--            <goBILDA5202SeriesMotor name="intakeMotor" port="2"/>-->
 
-<!--            <AnalogInput name="turretEncoder" port="3"/>-->
+<!--&lt;!&ndash;            <AnalogInput name="turretEncoder" port="3"/>&ndash;&gt;-->
 
-            <Servo name="hoodServo" port="3"/>
-            <Servo name="rampServo" port="5"/>
+<!--            <Servo name="hoodServo" port="3"/>-->
+<!--            <Servo name="rampServo" port="5"/>-->
 
         </LynxModule>
     </LynxUsbDevice>
