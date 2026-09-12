@@ -38,7 +38,7 @@ public class HeadingLock {
         rampTimer.reset();
     }
 
-    public double calculateRotationPower(double rawRx, double translationMagnitude) {
+    public double calculateRotationPower(double rawRx) {
         double currentHeading = follower.pose().heading();
         double dt = timer.seconds();
         timer.reset();

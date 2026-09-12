@@ -18,7 +18,7 @@
         <LynxModule name="Expansion Hub 2" port="2">
 <!--            <goBILDA5202SeriesMotor name="rightLaunchMotor" port="0"/>-->
 <!--            <goBILDA5202SeriesMotor name="leftLaunchMotor" port="1"/>-->
-<!--            <goBILDA5202SeriesMotor name="intakeMotor" port="2"/>-->
+            <goBILDA5202SeriesMotor name="intakeMotor" port="2"/>
 
 <!--&lt;!&ndash;            <AnalogInput name="turretEncoder" port="3"/>&ndash;&gt;-->
 

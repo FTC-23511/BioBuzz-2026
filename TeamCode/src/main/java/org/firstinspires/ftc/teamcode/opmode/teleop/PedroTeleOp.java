@@ -47,6 +47,9 @@ public class PedroTeleOp extends CommandOpMode {
 
         driver.getGamepadButton(GamepadKeys.Button.OPTIONS)
                 .whenPressed(new InstantCommand(() -> robot.drive.resetPose(0.0)));
+
+        driver.getGamepadButton(GamepadKeys.Button.BACK)
+                .whenPressed(new InstantCommand(robot.drive::toggleFieldCentric));
     }
 
     @Override

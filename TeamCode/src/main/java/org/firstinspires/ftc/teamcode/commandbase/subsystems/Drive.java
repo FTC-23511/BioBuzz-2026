@@ -32,6 +32,8 @@ public class Drive extends SubsystemBase {
     private final HeadingLock headingLock;
     private final ElapsedTime timer = new ElapsedTime();
 
+    private boolean fieldCentric = true;
+
     public Drive(Follower follower) {
         this.follower = follower;
         this.headingLock = new HeadingLock(follower);
@@ -59,6 +61,14 @@ public class Drive extends SubsystemBase {
         Pose current = follower.pose();
         follower.setPose(new Pose(current.x(), current.y(), heading));
         headingLock.resetHeading(heading);
+    }
+
+    public void toggleFieldCentric() {
+        fieldCentric = !fieldCentric;
+    }
+
+    public boolean isFieldCentric() {
+        return fieldCentric;
     }
 
     public RunCommand driveCommand(GamepadEx driver) {
@@ -109,7 +119,7 @@ public class Drive extends SubsystemBase {
             aX = 0; aY = 0; aRx = 0;
         }
 
-        double magnitude = Math.hypot(outX, outY);
+        double magnitude = Math.min(Math.hypot(outX, outY), 1.0);
         double scaledY = 0.0, scaledX = 0.0;
 
         if (magnitude > DEADZONE) {
@@ -118,10 +128,20 @@ public class Drive extends SubsystemBase {
             scaledX = (outX / magnitude) * scalar;
         }
 
-        double finalRx = headingLock.calculateRotationPower(outRx, magnitude);
+        double finalRx = headingLock.calculateRotationPower(outRx);
 
-        // Robot-centric: this PedroPathing version's Follower.manual() takes raw
-        // forward/strafe/turn powers with no field-centric conversion built in.
-        follower.manual(scaledY, scaledX, finalRx);
+        double outputX = scaledX;
+        double outputY = scaledY;
+
+        if (fieldCentric) {
+            // Rotate the driver-relative forward/strafe vector into the robot's frame using
+            // the current heading, since Follower.manual() only takes robot-relative
+            // forward/strafe/turn powers.
+            double heading = follower.pose().heading();
+            outputX = scaledX * Math.cos(-heading) - scaledY * Math.sin(-heading);
+            outputY = scaledX * Math.sin(-heading) + scaledY * Math.cos(-heading);
+        }
+
+        follower.manual(outputY, outputX, finalRx);
     }
 }
