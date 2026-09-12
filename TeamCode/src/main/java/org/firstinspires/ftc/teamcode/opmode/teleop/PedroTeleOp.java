@@ -35,7 +35,7 @@ public class PedroTeleOp extends CommandOpMode {
 
         // robot.camera.configureExposureBlocking(this, telemetryEx);
 
-        robot.intake.setState(Intake.IntakeState.STOP);
+//        robot.intake.setState(Intake.IntakeState.STOP);
 
         // Driver controls
         robot.drive.setDefaultCommand(robot.drive.driveCommand(driver));
