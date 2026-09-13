@@ -93,10 +93,6 @@ public class TwoWheelTuner extends Procedure {
                         "    c.yPodDirection.set(" +
                         (strafePodReversed ? "Encoder.REVERSE" : "Encoder.FORWARD") +
                         ");\n" +
-                        "    c.imuOrientation.set(new RevHubOrientationOnRobot(\n" +
-                        "            RevHubOrientationOnRobot.LogoFacingDirection." + values.logoDirection.name() + ",\n" +
-                        "            RevHubOrientationOnRobot.UsbFacingDirection." + values.usbDirection.name() + "\n" +
-                        "    ));\n" +
                         "});"
         );
     }
@@ -120,7 +116,6 @@ public class TwoWheelTuner extends Procedure {
             c.strafeTicksToInches.set(strafeTicksToInches);
             c.xPodDirection.set(xPodDirection);
             c.yPodDirection.set(yPodDirection);
-            c.imuOrientation.set(new RevHubOrientationOnRobot(values.logoDirection, values.usbDirection));
         });
     }
 }

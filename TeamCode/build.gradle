@@ -22,6 +22,12 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
@@ -44,4 +50,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.11.3"
     //noinspection NewerVersionAvailable
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.11.3"
+    // Gradle 9 no longer injects the launcher automatically the way Gradle 8 did
+    //noinspection NewerVersionAvailable
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.3"
 }

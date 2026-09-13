@@ -10,7 +10,6 @@ import com.pedropathing.revhub.localizers.ThreeWheelConfig;
 import com.pedropathing.revhub.localizers.TwoWheelConfig;
 import com.pedropathing.revhub.localizers.TwoWheelLocalizer;
 import com.pedropathing.utils.Timer;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.Arrays;
@@ -45,7 +44,7 @@ public class ThreeWheelAutomaticOffsetsTuner extends OpMode {
 
     private static class BlankIMU implements CustomIMU {
         @Override
-        public void initialize(HardwareMap hardwareMap, String hardwareMapName, RevHubOrientationOnRobot hubOrientation) {}
+        public void initialize(HardwareMap hardwareMap, String hardwareMapName) {}
 
         @Override
         public double getHeading() {
@@ -55,11 +54,6 @@ public class ThreeWheelAutomaticOffsetsTuner extends OpMode {
         @Override
         public void resetYaw() {}
     }
-
-    private final RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.UP,
-            RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-    );
 
     private TwoWheelConfig configLeft;
     private TwoWheelConfig configRight;
@@ -88,7 +82,6 @@ public class ThreeWheelAutomaticOffsetsTuner extends OpMode {
             c.yPodDirection.set(config.strafeEncoderDirection.get());
             c.imu.set(new BlankIMU());
             c.imuName.set("hi");
-            c.imuOrientation.set(orientation);
             c.xPodOffset.set(0.0);
             c.yPodOffset.set(0.0);
         });
@@ -102,7 +95,6 @@ public class ThreeWheelAutomaticOffsetsTuner extends OpMode {
             c.yPodDirection.set(config.strafeEncoderDirection.get());
             c.imu.set(new BlankIMU());
             c.imuName.set("hi");
-            c.imuOrientation.set(orientation);
             c.xPodOffset.set(0.0);
             c.yPodOffset.set(0.0);
         });
